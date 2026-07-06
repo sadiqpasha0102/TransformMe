@@ -1,0 +1,518 @@
+$primary: #006d43;
+$primary-light: #5cc38c;
+$primary-fixed: #90f7bc;
+$secondary: #57605d;
+$secondary-container: #d9e2dd;
+$background: #f8f9ff;
+$surface-lowest: #ffffff;
+$surface-low: #eff4ff;
+$surface-container: #e6eeff;
+$on-surface: #121c29;
+$on-surface-variant: #3e4941;
+$outline-variant: #bdcabf;
+$error: #ba1a1a;
+$shadow-color: rgba(0, 109, 67, 0.08);
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:host {
+  display: block;
+}
+
+.icon-v-align {
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.ml-1 {
+  margin-left: 0.25rem;
+}
+
+.mt-lg {
+  margin-top: 24px;
+}
+
+.btn-primary {
+  background-color: $primary;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba($primary, 0.12);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    background-color: darken($primary, 4%);
+    box-shadow: 0 6px 16px rgba($primary, 0.18);
+  }
+}
+
+.btn-squish {
+  &:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.2s ease;
+
+  .modal-card {
+    background-color: $surface-lowest;
+    width: 90%;
+    max-width: 640px;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba($primary, 0.12);
+    border: 1px solid rgba($outline-variant, 0.3);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @media (max-width: 576px) {
+      padding: 24px;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $on-surface-variant;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: $surface-low;
+        color: $on-surface;
+      }
+    }
+  }
+}
+
+.wizard-header {
+  margin-bottom: 32px;
+  width: 100%;
+
+  .wizard-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 8px;
+  }
+
+  .step-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: $primary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .step-percentage {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: $on-surface-variant;
+  }
+
+  .progress-bar-track {
+    height: 8px;
+    width: 100%;
+    background-color: $secondary-container;
+    border-radius: 10px;
+    overflow: hidden;
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: $primary;
+      border-radius: 10px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+}
+
+.wizard-step {
+  .step-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: $on-surface;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.01em;
+
+    @media (max-width: 576px) {
+      font-size: 22px;
+    }
+  }
+
+  .step-desc {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    color: $on-surface-variant;
+    margin: 0 0 32px 0;
+    line-height: 1.5;
+  }
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  .form-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: $on-surface;
+    margin-bottom: 6px;
+    margin-left: 4px;
+  }
+
+  .form-input, .form-select {
+    padding: 14px;
+    background-color: $surface-low;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    color: $on-surface;
+    outline: none;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: $primary;
+      background-color: $surface-lowest;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+  }
+}
+
+.relative-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .target-weight-input {
+    width: 100%;
+    padding-right: 48px;
+  }
+
+  .unit-badge {
+    position: absolute;
+    right: 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: $on-surface-variant;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+}
+
+.info-alert {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: rgba($primary, 0.05);
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  .alert-icon {
+    color: $primary;
+    font-size: 20px;
+  }
+
+  .alert-text {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    color: $on-surface-variant;
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-option {
+    padding: 24px 16px;
+    background-color: $surface-low;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &:hover {
+      background-color: lighten($surface-low, 2%);
+      transform: translateY(-2px);
+    }
+
+    &.active {
+      border-color: $primary;
+      background-color: $surface-lowest;
+      box-shadow: 0 6px 20px rgba($primary, 0.06);
+
+      .goal-icon-bg {
+        background-color: $primary;
+        color: white;
+      }
+    }
+
+    .goal-icon-bg {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: rgba($primary, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $primary;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .goal-label {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: $on-surface;
+    }
+  }
+}
+
+.activities-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .activity-option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background-color: $surface-low;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: lighten($surface-low, 2%);
+      transform: translateX(2px);
+    }
+
+    &.active {
+      border-color: $primary;
+      background-color: $surface-lowest;
+      box-shadow: 0 4px 15px rgba($primary, 0.04);
+    }
+
+    .activity-icon {
+      font-size: 24px;
+      color: $on-surface-variant;
+      transition: color 0.2s ease;
+
+      &.active-icon {
+        color: $primary;
+      }
+    }
+
+    .activity-details {
+      flex-grow: 1;
+
+      .activity-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: $on-surface;
+        margin-bottom: 2px;
+      }
+
+      .activity-desc {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 12px;
+        color: $on-surface-variant;
+      }
+    }
+
+    .select-checkmark-circle {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: $primary;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: white;
+
+      &.show {
+        display: flex;
+      }
+
+      .checkmark-tick {
+        font-size: 18px;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.wizard-navigation {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba($outline-variant, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .spacer {
+    flex-grow: 1;
+  }
+
+  .btn-wizard-back {
+    background: none;
+    border: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: $on-surface-variant;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: $surface-low;
+      color: $on-surface;
+    }
+  }
+}
+
+.success-screen {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .success-icon-container {
+    width: 110px;
+    height: 110px;
+    background-color: rgba($primary, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+
+    .checkmark-icon {
+      font-size: 60px;
+      color: $primary;
+      font-variation-settings: 'FILL' 1;
+    }
+  }
+
+  .success-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: $on-surface;
+    margin: 0 0 12px 0;
+  }
+
+  .success-subtitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: $on-surface-variant;
+    max-width: 440px;
+    margin: 0 0 36px 0;
+  }
+
+  .dashboard-btn {
+    padding: 14px 44px;
+    font-size: 16px;
+    border-radius: 50px;
+    box-shadow: 0 10px 25px rgba($primary, 0.15);
+
+    &:hover {
+      box-shadow: 0 12px 30px rgba($primary, 0.25);
+    }
+  }
+}

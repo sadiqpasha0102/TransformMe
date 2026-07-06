@@ -1,0 +1,289 @@
+<header class="navbar-header">
+    <nav class="navbar-container">
+        <div class="brand-logo" (click)="setActiveLink('hero')">TransformMe</div>
+        <div class="nav-links">
+            <a class="nav-link-item" [class.active]="activeLink() === 'features'"
+                (click)="setActiveLink('features')">Features</a>
+            <a class="nav-link-item" [class.active]="activeLink() === 'method'"
+                (click)="setActiveLink('method')">Method</a>
+            <a class="nav-link-item" [class.active]="activeLink() === 'community'"
+                (click)="setActiveLink('community')">Community</a>
+        </div>
+        <div class="nav-action">
+            <button class="btn-primary btn-squish" (click)="openModal('signup')">Get Started</button>
+        </div>
+    </nav>
+</header>
+
+<main class="main-content">
+    <section id="hero" class="hero-section">
+        <div class="hero-container">
+            <div class="hero-text-block">
+                <h1 class="hero-title">
+                    Track Your Transformation, <br />
+                    <span class="text-primary-color">Not Just Your Weight</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Experience a supportive journey focused on how you feel and move, powered by gentle AI guidance.
+                </p>
+                <div class="hero-cta-buttons">
+                    <button class="btn-primary btn-squish hero-btn" (click)="openModal('signup')">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual-block">
+                <div class="hero-image-wrapper">
+                    <img class="hero-img" alt="Healthy breakfast bowl and smartphone with clean UI"
+                        src="assets/hero-visual.jpg" />
+
+                    <div class="floating-insight-card">
+                        <div class="insight-content">
+                            <div class="insight-icon-bg">
+                                <span class="material-symbols-outlined">auto_awesome</span>
+                            </div>
+                            <div class="insight-text">
+                                <p class="insight-label">Daily Insight</p>
+                                <p class="insight-value">"You're making steady progress!"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features-section">
+        <div class="features-container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Your Wellness, Reimagined</h2>
+                <p class="section-subtitle">Gentle tools designed for real life.</p>
+            </div>
+
+            <div class="features-grid">
+                @for (feature of features(); track feature.title; let idx = $index) {
+                <div class="feature-card" [class.is-expanded]="feature.expanded">
+                    <div class="feature-icon-wrapper">
+                        <span class="material-symbols-outlined feature-icon">{{ feature.icon }}</span>
+                    </div>
+                    <h3 class="feature-card-title">{{ feature.title }}</h3>
+                    <p class="feature-card-desc">{{ feature.description }}</p>
+
+                    @if (feature.expanded) {
+                    <div class="feature-card-detail">
+                        <p>{{ feature.detailed }}</p>
+                    </div>
+                    }
+
+                    <button class="btn-text-link" (click)="toggleFeature(idx)">
+                        {{ feature.expanded ? 'Show Less' : 'Learn More' }}
+                        <span class="material-symbols-outlined icon-v-align text-xs">
+                            {{ feature.expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+                        </span>
+                    </button>
+                </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <section id="method" class="testimonials-section">
+        <div class="testimonials-container">
+            <div class="testimonial-slider-card">
+                <span class="material-symbols-outlined quote-icon">format_quote</span>
+
+                <div class="testimonial-slides">
+                    @for (item of testimonials(); track item.author; let idx = $index) {
+                    @if (currentTestimonialIndex() === idx) {
+                    <div class="testimonial-slide-content">
+                        <blockquote class="testimonial-quote">
+                            "{{ item.quote }}"
+                        </blockquote>
+                        <div class="testimonial-author-row">
+                            <div class="author-avatar-container">
+                                <img class="author-avatar" [src]="item.image" [alt]="item.author" />
+                            </div>
+                            <div class="author-info">
+                                <p class="author-name">{{ item.author }}</p>
+                                <p class="author-role">{{ item.role }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    }
+                </div>
+
+                <div class="slider-controls">
+                    <button class="slider-arrow-btn" (click)="prevTestimonial()">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <span class="slider-index-indicator">
+                        {{ currentTestimonialIndex() + 1 }} / {{ testimonials().length }}
+                    </span>
+                    <button class="slider-arrow-btn" (click)="nextTestimonial()">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="community" class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Start Your Gentle Journey Today</h2>
+            <p class="cta-subtitle">Join thousands of others focusing on progress over perfection. No pressure, just
+                momentum.</p>
+            <div class="cta-action">
+                <button class="btn-primary btn-squish cta-btn" (click)="openModal('signup')">
+                    Get Started
+                </button>
+            </div>
+            <p class="cta-subtext">7-day free trial • No credit card required</p>
+        </div>
+    </section>
+</main>
+
+<footer class="footer-section">
+    <div class="footer-container">
+        <div class="footer-left">
+            <div class="footer-brand" (click)="setActiveLink('hero')">TransformMe</div>
+            <p class="footer-copyright">© 2026 TransformMe. Gentle progress, every day.</p>
+        </div>
+        <div class="footer-right">
+            <a class="footer-link" href="#">Privacy Policy</a>
+            <a class="footer-link" href="#">Terms of Service</a>
+            <a class="footer-link" href="#">Support</a>
+        </div>
+    </div>
+</footer>
+
+@if (isModalOpen()) {
+<div class="auth-modal-backdrop" (click)="closeModal()">
+    <div class="auth-modal-card" (click)="$event.stopPropagation()">
+        <button class="auth-modal-close-btn" (click)="closeModal()">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+
+        @if (formSubmitted()) {
+        <div class="auth-success-state">
+            <span class="material-symbols-outlined success-icon">check_circle</span>
+            <h2 class="auth-success-title">
+                {{ authMode() === 'signup' ? 'Welcome to TransformMe!' : 'Welcome Back!' }}
+            </h2>
+            <p class="auth-success-desc">
+                {{ authMode() === 'signup' ? 'Your account has been successfully created. Initializing your personal
+                space...' : 'We are redirecting you to your fitness dashboard...' }}
+            </p>
+        </div>
+        } @else {
+        <div class="auth-modal-header">
+            <h2 class="brand-logo text-center">TransformMe</h2>
+            <p class="auth-modal-tagline">Gentle Momentum</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="auth-tab" [class.active]="authMode() === 'login'"
+                (click)="switchAuthMode('login')">Login</button>
+            <button class="auth-tab" [class.active]="authMode() === 'signup'" (click)="switchAuthMode('signup')">Sign
+                Up</button>
+        </div>
+
+        <div class="auth-form-container">
+            <div class="auth-form-title-group">
+                <h3 class="auth-form-title">
+                    {{ authMode() === 'login' ? 'Welcome back' : 'Start Your Journey' }}
+                </h3>
+                <p class="auth-form-subtitle">
+                    {{ authMode() === 'login' ? 'Your progress is waiting for you.' : 'Join us and begin your
+                    transformation.' }}
+                </p>
+            </div>
+
+            @if (errorMessage()) {
+            <div class="auth-error-alert">
+                <span class="material-symbols-outlined text-sm icon-v-align mr-1">error</span>
+                {{ errorMessage() }}
+            </div>
+            }
+
+            <form class="auth-form" (submit)="handleAuthSubmit($event)">
+                @if (authMode() === 'signup') {
+                <div class="form-group">
+                    <label class="form-label" for="fullName">Full Name</label>
+                    <div class="input-icon-wrapper">
+                        <span class="material-symbols-outlined input-icon">person</span>
+                        <input class="form-input" id="fullName" type="text" placeholder="Sarah Jenkins"
+                            [ngModel]="fullName()" (ngModelChange)="fullName.set($event)" name="fullName" required />
+                    </div>
+                </div>
+                }
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <div class="input-icon-wrapper">
+                        <span class="material-symbols-outlined input-icon">mail</span>
+                        <input class="form-input" id="email" type="email" placeholder="name@example.com"
+                            [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="input-icon-wrapper">
+                        <span class="material-symbols-outlined input-icon">lock</span>
+                        <input class="form-input" id="password" type="password" placeholder="••••••••"
+                            [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" required />
+                    </div>
+                </div>
+
+                @if (authMode() === 'login') {
+                <div class="forgot-password-link">
+                    <a href="#" (click)="$event.preventDefault()">Forgot password?</a>
+                </div>
+                }
+
+                @if (authMode() === 'signup') {
+                <div class="terms-group">
+                    <input class="terms-checkbox" id="agreeToTerms" type="checkbox" [ngModel]="agreeToTerms()"
+                        (ngModelChange)="agreeToTerms.set($event)" name="agreeToTerms" required />
+                    <label class="terms-label" for="agreeToTerms">
+                        I agree to the <a href="#" (click)="$event.preventDefault()">Terms of Service</a> & <a href="#"
+                            (click)="$event.preventDefault()">Privacy Policy</a>
+                    </label>
+                </div>
+                }
+
+                <div class="form-action">
+                    <button class="btn-primary btn-block" type="submit" [disabled]="isSubmitting()">
+                        @if (isSubmitting()) {
+                        <span class="material-symbols-outlined spinner-icon mr-1">sync</span>
+                        Processing...
+                        } @else {
+                        <span>{{ authMode() === 'login' ? 'Sign In' : 'Create Account' }}</span>
+                        <span class="material-symbols-outlined text-sm icon-v-align ml-1">arrow_forward</span>
+                        }
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-toggle-footer">
+                <p>
+                    @if (authMode() === 'login') {
+                    Don't have an account?
+                    <button class="toggle-link-btn" (click)="switchAuthMode('signup')">Create Account</button>
+                    } @else {
+                    Already have an account?
+                    <button class="toggle-link-btn" (click)="switchAuthMode('login')">Login Here</button>
+                    }
+                </p>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+}
+
+@if (showHealthDetailsModal()) {
+<app-user-health-details (complete)="onOnboardingComplete()"
+    (closeModal)="onOnboardingClose()"></app-user-health-details>
+}

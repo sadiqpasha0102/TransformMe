@@ -1,0 +1,190 @@
+<div class="modal-backdrop" (click)="close()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <button class="modal-close-btn" (click)="close()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+
+    @if (!onboardingComplete()) {
+      <div class="wizard-header">
+        <div class="wizard-header-row">
+          <span class="step-label">STEP {{ currentStep() }} OF {{ totalSteps }}</span>
+          <span class="step-percentage">{{ (currentStep() / totalSteps) * 100 }}%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" [style.width]="(currentStep() / totalSteps) * 100 + '%'"></div>
+        </div>
+      </div>
+
+      <form (submit)="$event.preventDefault()" class="wizard-form">
+        @if (currentStep() === 1) {
+          <div class="wizard-step">
+            <h2 class="step-title">Let's start with the basics</h2>
+            <p class="step-desc">Tell us a bit about who you are so we can personalize your experience.</p>
+            <div class="form-fields">
+              <div class="form-group">
+                <label class="form-label" for="fullName">Full Name</label>
+                <input class="form-input" 
+                       id="fullName" 
+                       type="text" 
+                       placeholder="e.g. Alex Johnson"
+                       [ngModel]="fullName()" 
+                       (ngModelChange)="fullName.set($event)" 
+                       name="fullName" 
+                       required />
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="age">Age</label>
+                  <input class="form-input" 
+                         id="age" 
+                         type="number" 
+                         placeholder="Years"
+                         [ngModel]="age()" 
+                         (ngModelChange)="age.set($event)" 
+                         name="age" 
+                         required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="gender">Gender Identity</label>
+                  <select class="form-select" 
+                          id="gender"
+                          [ngModel]="gender()" 
+                          (ngModelChange)="gender.set($event)" 
+                          name="gender">
+                    @for (opt of genderOptions(); track opt) {
+                      <option [value]="opt">{{ opt }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (currentStep() === 2) {
+          <div class="wizard-step">
+            <h2 class="step-title">Your physical profile</h2>
+            <p class="step-desc">Accurate measurements help us calculate your caloric needs precisely.</p>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="height">Height (cm)</label>
+                <input class="form-input" 
+                       id="height" 
+                       type="number" 
+                       placeholder="175"
+                       [ngModel]="height()" 
+                       (ngModelChange)="height.set($event)" 
+                       name="height" 
+                       required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="weight">Current Weight (kg)</label>
+                <input class="form-input" 
+                       id="weight" 
+                       type="number" 
+                       placeholder="70"
+                       [ngModel]="weight()" 
+                       (ngModelChange)="weight.set($event)" 
+                       name="weight" 
+                       required />
+              </div>
+            </div>
+            <div class="info-alert">
+              <span class="material-symbols-outlined alert-icon">info</span>
+              <p class="alert-text">This information stays private and is only used to create your momentum plan.</p>
+            </div>
+          </div>
+        }
+
+        @if (currentStep() === 3) {
+          <div class="wizard-step">
+            <h2 class="step-title">What's your primary goal?</h2>
+            <p class="step-desc">Select the path that resonates most with your current journey.</p>
+            
+            <div class="goals-grid">
+              @for (goalItem of goals(); track goalItem.id) {
+                <div class="goal-option" 
+                     [class.active]="selectedGoal() === goalItem.id" 
+                     (click)="selectGoal(goalItem.id)">
+                  <div class="goal-icon-bg">
+                    <span class="material-symbols-outlined goal-icon">{{ goalItem.icon }}</span>
+                  </div>
+                  <span class="goal-label">{{ goalItem.label }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="form-group mt-lg">
+              <label class="form-label" for="targetWeight">Target Weight (kg)</label>
+              <div class="relative-input-wrapper">
+                <input class="form-input target-weight-input" 
+                       id="targetWeight" 
+                       type="number" 
+                       placeholder="Enter target weight"
+                       [ngModel]="targetWeight()" 
+                       (ngModelChange)="targetWeight.set($event)" 
+                       name="targetWeight" 
+                       required />
+                <div class="unit-badge">kg</div>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (currentStep() === 4) {
+          <div class="wizard-step">
+            <h2 class="step-title">Daily Activity Level</h2>
+            <p class="step-desc">Be honest with your daily routine to get the best nutrition estimates.</p>
+            
+            <div class="activities-stack">
+              @for (act of activities(); track act.id) {
+                <div class="activity-option" 
+                     [class.active]="activityLevel() === act.id" 
+                     (click)="selectActivity(act.id)">
+                  <span class="material-symbols-outlined activity-icon" [class.active-icon]="activityLevel() === act.id">{{ act.icon }}</span>
+                  <div class="activity-details">
+                    <div class="activity-title">{{ act.label }}</div>
+                    <div class="activity-desc">{{ act.desc }}</div>
+                  </div>
+                  <div class="select-checkmark-circle" [class.show]="activityLevel() === act.id">
+                    <span class="material-symbols-outlined checkmark-tick">check</span>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="wizard-navigation">
+          @if (currentStep() > 1) {
+            <button class="btn-wizard-back btn-squish" type="button" (click)="prevStep()">
+              <span class="material-symbols-outlined icon-v-align">arrow_back</span> Back
+            </button>
+          } @else {
+            <div class="spacer"></div>
+          }
+          <button class="btn-primary btn-squish" type="button" (click)="nextStep()">
+            @if (currentStep() === totalSteps) {
+              <span>Finish</span>
+              <span class="material-symbols-outlined icon-v-align ml-1">done_all</span>
+            } @else {
+              <span>Next</span>
+              <span class="material-symbols-outlined icon-v-align ml-1">arrow_forward</span>
+            }
+          </button>
+        </div>
+      </form>
+    } @else {
+      <div class="success-screen">
+        <div class="success-icon-container">
+          <span class="material-symbols-outlined checkmark-icon">check_circle</span>
+        </div>
+        <h2 class="success-title">Welcome, Hero!</h2>
+        <p class="success-subtitle">Your nutrition plan is ready. Let's start this journey together with gentle momentum.</p>
+        <button class="btn-primary btn-squish dashboard-btn" type="button" (click)="finish()">
+          Go to Dashboard
+        </button>
+      </div>
+    }
+  </div>
+</div>

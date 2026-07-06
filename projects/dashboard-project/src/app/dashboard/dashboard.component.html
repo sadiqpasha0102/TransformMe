@@ -1,0 +1,176 @@
+<div class="dashboard-layout">
+  <lib-side-nav></lib-side-nav>
+
+  <main class="dashboard-main-content">
+    <header class="dashboard-header-block">
+      <div class="header-welcome">
+        <h2 class="welcome-title">Hello, Alex</h2>
+        <p class="welcome-subtitle">Here is your gentle momentum for today.</p>
+      </div>
+      <div class="header-profile">
+        <div class="profile-avatar-container">
+          <img class="profile-avatar-img" alt="Alex Jenkins Profile" src="assets/sarah-j.jpg">
+        </div>
+      </div>
+    </header>
+
+    @if (summary()) {
+      <section class="summary-cards-grid">
+        <div class="summary-card">
+          <span class="card-label">Current Weight</span>
+          <div class="card-value-row">
+            <span class="card-value">{{ summary()?.currentWeight }}</span>
+            <span class="card-unit">kg</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <span class="card-label">Target Weight</span>
+          <div class="card-value-row">
+            <span class="card-value">{{ summary()?.targetWeight }}</span>
+            <span class="card-unit">kg</span>
+          </div>
+        </div>
+        <div class="summary-card highlight-card">
+          <span class="card-label highlight-label">Weight Lost</span>
+          <div class="card-value-row">
+            <span class="card-value highlight-value">{{ summary()?.weightLost }}</span>
+            <span class="card-unit highlight-unit">kg</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <span class="card-label">Current Streak</span>
+          <div class="card-value-row items-center-row">
+            <span class="card-value">{{ summary()?.currentStreak }}</span>
+            <span class="material-symbols-outlined streak-fire-icon">local_fire_department</span>
+          </div>
+        </div>
+      </section>
+    }
+
+    @if (nutrition()) {
+      <section class="nutrition-summary-card">
+        <div class="card-header-row">
+          <h3 class="summary-card-title">Nutrition Summary</h3>
+          <span class="goal-label-kcal">Daily Goal: {{ nutrition()?.dailyGoalKcal }} kcal</span>
+        </div>
+        <div class="nutrition-rings-grid">
+          <div class="nutrition-ring-item">
+            <div class="relative-ring-container large-ring">
+              <svg class="ring-svg">
+                <circle class="ring-bg" cx="64" cy="64" r="58"></circle>
+                <circle class="ring-fill calories-ring" cx="64" cy="64" r="58"
+                        [style.strokeDasharray]="2 * 3.14159 * 58"
+                        [style.strokeDashoffset]="getCaloriesOffset()"></circle>
+              </svg>
+              <div class="ring-center-content">
+                <span class="ring-value-kcal">{{ nutrition()?.kcalConsumed }}</span>
+                <span class="ring-label-sub">kcal left</span>
+              </div>
+            </div>
+            <span class="ring-title">Calories</span>
+          </div>
+
+          <div class="nutrition-ring-item">
+            <div class="relative-ring-container">
+              <svg class="ring-svg">
+                <circle class="ring-bg" cx="48" cy="48" r="42"></circle>
+                <circle class="ring-fill protein-ring" cx="48" cy="48" r="42"
+                        [style.strokeDasharray]="2 * 3.14159 * 42"
+                        [style.strokeDashoffset]="getProteinOffset()"></circle>
+              </svg>
+              <div class="ring-center-content">
+                <span class="ring-value-macro">{{ nutrition()?.proteinG }}g</span>
+              </div>
+            </div>
+            <span class="ring-title">Protein</span>
+          </div>
+
+          <div class="nutrition-ring-item">
+            <div class="relative-ring-container">
+              <svg class="ring-svg">
+                <circle class="ring-bg" cx="48" cy="48" r="42"></circle>
+                <circle class="ring-fill carbs-ring" cx="48" cy="48" r="42"
+                        [style.strokeDasharray]="2 * 3.14159 * 42"
+                        [style.strokeDashoffset]="getCarbsOffset()"></circle>
+              </svg>
+              <div class="ring-center-content">
+                <span class="ring-value-macro">{{ nutrition()?.carbsG }}g</span>
+              </div>
+            </div>
+            <span class="ring-title">Carbs</span>
+          </div>
+
+          <div class="nutrition-ring-item">
+            <div class="relative-ring-container">
+              <svg class="ring-svg">
+                <circle class="ring-bg" cx="48" cy="48" r="42"></circle>
+                <circle class="ring-fill fat-ring" cx="48" cy="48" r="42"
+                        [style.strokeDasharray]="2 * 3.14159 * 42"
+                        [style.strokeDashoffset]="getFatOffset()"></circle>
+              </svg>
+              <div class="ring-center-content">
+                <span class="ring-value-macro">{{ nutrition()?.fatG }}g</span>
+              </div>
+            </div>
+            <span class="ring-title">Fat</span>
+          </div>
+        </div>
+      </section>
+    }
+
+    <section class="bottom-widgets-grid">
+      <div class="widget-card tasks-widget">
+        <h3 class="widget-title">Today's Tasks</h3>
+        <ul class="tasks-list">
+          @for (task of tasks(); track task.id) {
+            <li class="task-item" [class.completed]="task.completed" (click)="toggleTask(task)">
+              <button class="task-checkbox-btn" [class.checked]="task.completed">
+                @if (task.completed) {
+                  <span class="material-symbols-outlined checkmark-icon">check</span>
+                }
+              </button>
+              <span class="task-title-text">{{ task.title }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="right-widgets-block">
+        <div class="widget-card coach-widget">
+          <div class="coach-header">
+            <span class="material-symbols-outlined coach-icon">psychology</span>
+            <span class="coach-title-text">AI Coach: Weight Trend</span>
+          </div>
+          <div class="trend-chart-container">
+            <ag-charts [options]="trendChartOptions()" style="height: 180px; width: 100%; display: block;"></ag-charts>
+          </div>
+        </div>
+
+        <div class="widget-card nutrition-pie-widget">
+          <h3 class="widget-title">Daily Nutrition Breakdown</h3>
+          <div class="pie-chart-content-row">
+            <ag-charts [options]="nutritionChartOptions()" style="height: 180px; width: 100%; display: block;"></ag-charts>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="weight-logs-section mt-lg">
+      <div class="widget-card">
+        <h3 class="widget-title">Weight & Nutrition Log History</h3>
+        <div class="ag-grid-container">
+          <ag-grid-angular
+            style="width: 100%; height: 260px;"
+            [rowData]="logRowData()"
+            [columnDefs]="logColumnDefs"
+            class="ag-theme-quartz">
+          </ag-grid-angular>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="floating-action-add-btn">
+    <span class="material-symbols-outlined">add</span>
+  </button>
+</div>
