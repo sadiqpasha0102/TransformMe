@@ -3,6 +3,28 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: FastAPI",
+      "type": "python",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "main:app",
+        "--reload"
+      ],
+      "cwd": "${workspaceFolder}/backend",
+      "python": "${workspaceFolder}/backend/myenv/bin/python",
+      "jinja": true
+    },
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/backend",
+      "python": "${workspaceFolder}/backend/myenv/bin/python"
+    },
+    {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",

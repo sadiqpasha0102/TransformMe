@@ -1,26 +1,25 @@
-from models import Products
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from api import api_router
+from services.login import JWTMiddleware
 
 app = FastAPI()
-products = [
-    Products(id=1, name="Apple", price=100, image_url="image.jpg"),
-    Products(id=2, name="Banana", price=200, image_url="image.jpg")
-]
-@app.get("/")
-def func():
 
-    return products
+# Enable CORS for frontend Angular apps (running on ports 4200, 4201, 4202)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins for development convenience
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# Enable JWT middleware to secure other backend routes
+app.add_middleware(JWTMiddleware)
 
-@app.get("/product/{id}")
-def getData(id: int):
-    for product in products:
-        if product.id == id:
-            return product
+# 1. Centralized routers (initialised once, available on backend startup)
+app.include_router(api_router, prefix="/api/v1")
 
-
-@app.post("/create")
-def createProduct(product: Products):
-    products.append(product)
-    return products
-        
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
