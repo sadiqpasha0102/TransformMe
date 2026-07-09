@@ -1,0 +1,2 @@
+python-interpreter-path = "myenv/bin/python"
+search-path = ["."]
