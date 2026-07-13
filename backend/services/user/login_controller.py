@@ -4,16 +4,17 @@ from fastapi import APIRouter, HTTPException, status, Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 from pydantic import BaseModel
-
+import uuid
 import os
 from dotenv import load_dotenv
 from db import dynamodb
-
+from router import router
 load_dotenv()
 
-SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-TABLE_NAME = os.getenv("DYNAMODB_TABLE_NAME", "Users")
+
+SECRET_KEY = str(os.getenv("JWT_SECRET_KEY"))
+ALGORITHM = str(os.getenv("JWT_ALGORITHM"))
+TABLE_NAME = str(os.getenv("DYNAMODB_TABLE_NAME"))
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
@@ -32,7 +33,6 @@ def decode_access_token(token: str):
     except jwt.InvalidTokenError:
         return None
 
-router = APIRouter()
 
 class LoginRequest(BaseModel):
     email: str
@@ -54,14 +54,25 @@ def validate_login(request: LoginRequest):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Database error: {str(e)}"
+            detail=f"Something went wrong!!: {str(e)}"
         )
-    
-    if user_item and user_item.get("password") == request.password:
+    if not user_item or user_item.get("email")!=email:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    elif user_item and user_item.get("password") != request.password:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Password is incorrect"
+        )
+    elif user_item and user_item.get("password") == request.password:
         role = user_item.get("role", "user")
+        user_id = user_item.get("id")
         user_info = {
             "sub": email,
-            "role": role
+            "role": role,
+            "id": user_id
         }
         token = create_access_token(user_info)
         return {
@@ -70,6 +81,7 @@ def validate_login(request: LoginRequest):
             "access_token": token,
             "token_type": "bearer",
             "user": {
+                "id": user_id,
                 "email": email,
                 "role": role
             }
@@ -100,9 +112,10 @@ def register_user(request: RegisterRequest):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="User already exists"
             )
-            
+        unique_id = str(uuid.uuid4())
         table.put_item(
             Item={
+                "id": unique_id,
                 "email": email,
                 "password": password,
                 "role": role
@@ -112,6 +125,7 @@ def register_user(request: RegisterRequest):
             "status": "success",
             "message": "User registered successfully",
             "user": {
+                "id": unique_id,
                 "email": email,
                 "role": role
             }
