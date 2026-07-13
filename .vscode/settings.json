@@ -2,5 +2,15 @@
   "python.defaultInterpreterPath": "/Users/apple/Documents/ecom/backend/myenv/bin/python",
   "python.analysis.extraPaths": [
     "./backend"
-  ]
+  ],
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "backend/myenv": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "backend/myenv": true
+  }
 }

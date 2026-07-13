@@ -1,7 +1,9 @@
 from fastapi import APIRouter
-from services.login import router as login_router
+from services.user.login_controller import router as login_router
+from services.user import onboarding_controller
 
-api_router = APIRouter()
+router = APIRouter()
 
 # Register sub-routers under a unified API structure
-api_router.include_router(login_router, prefix="/auth", tags=["Authentication"])
+router.include_router(login_router, prefix="/auth", tags=["Authentication"])
+

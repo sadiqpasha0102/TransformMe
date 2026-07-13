@@ -38,6 +38,38 @@ def create_users_table():
         else:
             raise e
 
+def create_user_profiles_table():
+    profile_table_name = "userProfiles"
+    try:
+        table = dynamodb.Table(profile_table_name)
+        table.load()
+        print(f"Table '{profile_table_name}' already exists. Skipping creation.")
+        return table
+    except botocore.exceptions.ClientError as e:
+        if e.response["Error"]["Code"] == "ResourceNotFoundException":
+            print(f"Table '{profile_table_name}' does not exist. Creating table...")
+            table = dynamodb.create_table(
+                TableName=profile_table_name,
+                KeySchema=[
+                    {"AttributeName": "user", "KeyType": "HASH"}
+                ],
+                AttributeDefinitions=[
+                    {"AttributeName": "user", "AttributeType": "S"}
+                ],
+                ProvisionedThroughput={
+                    "ReadCapacityUnits": 5,
+                    "WriteCapacityUnits": 5
+                }
+            )
+            print("Waiting for table to be created...")
+            table.wait_until_exists()
+            print(f"Table '{profile_table_name}' created successfully.")
+            return table
+        else:
+            raise e
+
 if __name__ == "__main__":
     create_users_table()
+    create_user_profiles_table()
+
 

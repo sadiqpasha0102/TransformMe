@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api import api_router
-from services.login import JWTMiddleware
+from api import router
+from services.user.login_controller import JWTMiddleware
 
 app = FastAPI()
 
@@ -18,7 +18,7 @@ app.add_middleware(
 app.add_middleware(JWTMiddleware)
 
 # 1. Centralized routers (initialised once, available on backend startup)
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(router, prefix="/api/v1")
 
 @app.get("/health")
 def health_check():
